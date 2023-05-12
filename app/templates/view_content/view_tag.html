@@ -1,0 +1,20 @@
+{% extends 'head.html' %}
+
+{% block title %}
+View tag
+{% endblock title %}
+
+{% block static %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'app/css/base.css' %}">
+{% endblock %}
+
+{% block head %}
+
+     {% for content in contents %}
+     {% for content_image in content.content_id.all %}
+     <a href="/view_content/{{content.id}}"><img class="img" src="{{ content_image.image.url }}" ></a>
+     {% endfor %}
+     {% endfor %}
+
+{% endblock head %}

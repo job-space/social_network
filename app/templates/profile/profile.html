@@ -1,0 +1,108 @@
+{% extends 'head.html' %}
+
+{% block title %}
+My profile
+{% endblock title %}
+
+{% block static %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'app/css/signup.css' %}">
+{% endblock %}
+
+{% block head %}
+{% if user == user_login %}
+<div style='margin-left:32px;'>
+ <form action="{% url 'app:create_user_profile' %}" method="POST">
+     {% csrf_token %}
+     <input type="hidden" name="change_profile" value="True"><button type="submit" class="btn btn-outline-warning">Change profile: {{ user_login.username }}</button>
+ </form>
+</div>
+{% endif %}
+
+{% if user != user_login %}
+<form id="sub">
+    {% csrf_token %}
+<div>
+   {% if user_login not in sub_user %}
+<button type="button" id="status_sub" name="{{user_login.id}}" class="rounded-3" style="font-size:20px; color:black; background-color: #4CAF50;">Subscribe</button>
+    {% else %}
+<button type="button" id="status_sub" name="{{user_login.id}}" class="rounded-3"  style="font-size:20px; color:black; background-color: #f44336;">Unsubscribe</button>
+    {% endif %}
+  </div>
+</form>{% endif %}
+<ul class="rounded float-start">
+  <p><img class="rounded-3" width="500" height="302" src="{{ profile.user_image.url }}"></p>
+</ul>
+
+<h3><div style='margin-left:550px;'>
+ Nickname: {{ user_login.username }}
+<br><br>
+ Biography: {{ profile.description }}
+<br><br>
+</h3>
+</div>
+{% if user == user_login %}
+<div style='margin-left:550px;'>
+ <form action="{% url 'app:following' %}" method="POST">
+     {% csrf_token %}
+       <input type="hidden" name="following" value="True"><button type="submit" class="btn btn-outline-warning">Following</button>
+   </form>
+</div>
+<div style='margin-left:660px; margin-top:-37px;'>
+   <form action="{% url 'app:followers' %}" method="POST">
+       {% csrf_token %}
+       <input type="hidden" name="followers" value="True"><button type="submit" class="btn btn-outline-warning">Followers</button>
+   </form>
+</div>
+<div style='margin-left:550px;'>
+<form action="{% url 'app:add_content' %}" method="POST">
+    {% csrf_token %}
+       <input type="hidden" name="add_content" value="True"><button type="submit" class="btn btn-outline-warning">Add content</button>
+   </form>
+</div>
+{% endif %}
+
+</html>
+<h3><div style='margin-left:35px; margin-top:133px;'>
+{% if user == user_login %}
+<br><br>
+My publications:
+<br><br>
+{% else %}
+<br><br>
+    {{user_login.username}} publications:
+<br><br>
+{% endif %}
+
+{% for content in content_all %}
+<a href="/view_content/{{content.id}}"><img class="rounded-3" width="300" height="201" src="{{ content.content_id.first.image.url }}" ></a>
+{% endfor %}
+
+</h3></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+// AJAX CALL
+$('.rounded-3').click(function(){
+    $.ajax({
+             type: "POST",
+             url: "{% url 'app:subscribe' %}",
+             data: {'subscribe_user': $(this).attr('name'),'csrfmiddlewaretoken': '{{ csrf_token }}'},
+             dataType: "json",
+             success: function(response) {
+                    if(response.subscribe==true){
+                      $("#status_sub").css("background-color","#f44336");
+                      $("#status_sub").text('Unsubscribe');
+
+                    }
+                    else if(response.subscribe==false){
+                      $("#status_sub").css("background-color","#4CAF50");
+                      $("#status_sub").text('Subscribe');
+
+                    }
+              }
+        });
+  })
+</script>
+
+{% endblock head %}

@@ -1,0 +1,103 @@
+{% extends 'head.html' %}
+
+{% block title %}
+View post
+{% endblock title %}
+
+{% block static %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'app/css/base.css' %}">
+{% endblock %}
+
+{% block head %}
+<div id="carouselExampleIndicators" class="carousel slide">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+  <div class="carousel-inner">
+
+      {% for img in content.content_id.all %}
+    <div class="carousel-item active">
+      <img src="{{ img.image.url }}" class="rounded-3">
+    </div>
+      {% endfor %}
+
+
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+    <br><br>
+    Author <a href="http://127.0.0.1:8000/view_profile/{{content.profile.user.username}}" class="link-warning">{{ content.profile.user.username }}</a>
+
+
+<form id="like">
+    {% csrf_token %}
+<div>
+{% if user not in content.liked.all %}
+<button type="button" id="status_like" name="{{ content.id }}" class="rounded-3" style="font-size:20px; color:black; background-color: #4CAF50;">Like</button>
+
+    {% else %}
+<button type="button" id="status_like" name="{{ content.id }}" class="rounded-3"  style="font-size:20px; color:black; background-color: #f44336;">Unlike</button>
+
+    {% endif %}
+<div id="count_like">{{ content.liked.all.count }}  likes</div>
+  </div>
+</form>
+
+    <ul id="mainmenu" class="mainmenu">
+
+        {% if content.profile == user.profile %}
+        <form action="{% url 'app:tag' %}" method="POST">
+            {% csrf_token %}
+        Enter a tag <input name="tag"><input type="hidden" name="content_id" value="{{content.id}}"><button type="submit" class="btn btn-outline-warning">Add</button>
+        </form>
+        {% endif %}
+    </ul>
+</div>
+
+{% if content.tags.all.count > 0 %}
+<form action="{% url 'app:view_tag' %}" method="POST">
+    {% csrf_token %}
+    <h4>Tag:
+    {% for tag in content.tags.all %}
+     <input type="hidden" name="tag" value="{{tag.tag_name}}"><button type="submit" class="btn btn-outline-warning">{{tag.tag_name}}</button>
+     {% endfor %}
+</form>
+{% endif %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+// AJAX CALL
+$('.rounded-3').click(function(){
+    $.ajax({
+             type: "POST",
+             url: "{% url 'app:like_content' %}",
+             data: {'content_id': $(this).attr('name'),'csrfmiddlewaretoken': '{{ csrf_token }}'},
+             dataType: "json",
+             success: function(response) {
+              selector = document.getElementsByName(response.content_id);
+                    if(response.liked==true){
+                      $(selector).css("background-color","#f44336");
+                      $("#count_like").text(response['likes_count'] + ' likes');
+                      $("#status_like").text('Unlike');
+
+                    }
+                    else if(response.liked==false){
+                      $(selector).css("background-color","#4CAF50");
+                      $("#count_like").text(response['likes_count'] + ' likes');
+                      $("#status_like").text('Like');
+
+                    }
+              }
+        });
+  })
+</script>
+{% endblock %}

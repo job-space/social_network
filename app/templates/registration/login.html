@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}
+Login
+{% endblock title %}
+
+{% block static %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'app/css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div style='margin-left:0%; margin-top:15%;'>
+  <h2>Login</h2>
+    <form method="post">
+      {% csrf_token %}
+      <table>
+        {{ form.as_p }}
+          <button type="Submit" class="btn btn-outline-warning">Submit</button>
+      </table>
+    </form>
+ <form action="{% url 'app:registration' %}" method="POST">
+<br>
+{% csrf_token %}
+   Not with us yet?  <button type="submit" class="btn btn-outline-warning">Registration</button>
+ </form>
+</div>
+
+
+{% endblock %}
