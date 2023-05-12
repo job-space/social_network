@@ -1,0 +1,15 @@
+   body {
+    background-image: url('../img/image.jpg'); /* Цвет фона */
+    background-size: 100% 200%;
+    color: yellow; /* Цвет текста */
+    text-align: center;
+
+   }
+
+
+   img {
+       height: 500px;
+       width: 500px;
+   }
+
+

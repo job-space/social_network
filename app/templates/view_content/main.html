@@ -1,0 +1,24 @@
+{% extends 'head.html' %}
+
+{% block title %}
+View content
+{% endblock title %}
+
+{% block static %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'app/css/base.css' %}">
+{% endblock %}
+
+{% block head %}
+
+  {% for content in content_all %}
+
+    <a href="/view_content/{{content.id}}"><img src="{{ content.content_id.first.image.url }}" class="rounded-3"></a>
+    <br><br>
+    <ul id="mainmenu" class="mainmenu">
+    Author <a href="/view_profile/{{content.profile.user.username}}/" class="link-warning">{{ content.profile.user.username }}</a>
+    </ul>
+
+  {% endfor %}
+
+{% endblock head %}

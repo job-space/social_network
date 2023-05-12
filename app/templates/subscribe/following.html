@@ -1,0 +1,26 @@
+{% extends 'head.html' %}
+
+{% block title %}
+{{ type_follow }}
+{% endblock title %}
+
+{% block static %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'app/css/base.css' %}">
+{% endblock %}
+
+{% block head %}
+<h3>{{ type_follow }}</h3>
+  {% for content in content_all %}
+
+   {% for c in content %}
+    <a href="/view_content/{{c.id}}"><img class="img" src="{{ c.content_id.first.image.url }}" ></a>
+    <br><br>
+    <ul id="mainmenu" class="mainmenu">
+    Author <a href="/view_profile/{{c.profile.user.username}}">{{ c.profile.user.username }}</a>
+    </ul>
+
+  {% endfor %}
+{% endfor %}
+{% endblock head %}
+

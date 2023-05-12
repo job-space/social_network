@@ -1,0 +1,6 @@
+   body {
+    background-image: url('../img/image.jpg'); /* Цвет фона */
+    background-size: 100% 200%;
+    color: yellow; /* Цвет текста */
+
+   }

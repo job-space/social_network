@@ -1,0 +1,21 @@
+{% extends 'head.html' %}
+
+{% block title %}
+Add post
+{% endblock title %}
+
+{% block static %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'app/css/signup.css' %}">
+{% endblock %}
+
+{% block head %}
+<h1>Add content</h1>
+  <h3>{{warning}}</h3>
+<form action="{% url 'app:add_content' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-outline-warning"><input type="file" name="image" multiple></button>
+        <button type="submit" class="btn btn-outline-warning"><input type="submit" value="Upload images"></button>
+</form>
+
+{% endblock head %}d
